@@ -11,7 +11,7 @@ import SignupPage from "./pages/SignupPage";
 
 function App() {
 
-    const [loggedIn, setLoggedIn] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(false);
     const [dropdownFlag, setDropdownFlag] = useState(false);
     
     useEffect(() => {
