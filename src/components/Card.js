@@ -1,7 +1,6 @@
 import photo from '../assets/bag.jpg';
 
 function Card({ product }) {
-
     const { name, desc, price } = product;
 
     const handleClick = () => {

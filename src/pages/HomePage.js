@@ -1,43 +1,49 @@
+import { useEffect, useState, CSSProperties } from "react";
 import Card from "../components/Card";
+import { getAllProducts } from "../network/ApiManager";
+import { PulseLoader } from "react-spinners";
+
+const __cssOverride: CSSProperties = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "auto 0"
+}
 
 function HomePage() {
 
-    const p1 = {
-        'name': 'Water Bottle',
-        'desc': 'This is for children',
-        'price': "490"
+    const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const populateData = async () => {
+        const fetchedData = await getAllProducts();
+        setData(fetchedData);
+        setIsLoading(false);
     }
 
-    const p2 = {
-        'name': 'Chocolate',
-        'desc': 'This is so good for health. Please eat it everyday.',
-        'price': "540"
-    }
+    useEffect(() => {
+        setIsLoading(true);
+        populateData();
+    }, []);
 
-    const p3 = {
-        'name': 'Hello World And Every Planet',
-        'desc': 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolorem natus soluta sed nihil doloribus dolor accusamus perferendis velit fugit eligendi.',
-        'price': '29010'
-    }
-
-    // const design = "w-36 h-20 bg-orange-300 rounded border border-white text-center";
 
     return (
-        // <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl: gap-3">
+        isLoading === true ? 
+        <PulseLoader 
+            className="loading"
+            color={"#247490"}
+            loading={isLoading}
+            size={20}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+            cssOverride={__cssOverride}
+        /> :
         <div className="flex flex-wrap gap-4 justify-start m-10">
-            <Card product={p1}/>
-            <Card product={p2}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            <Card product={p3}/>
-            
+            {
+                data.map((product, key) => {
+                    return <Card key={key} product={product} />
+                })
+            }
         </div>
     );
 }

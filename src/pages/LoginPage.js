@@ -1,5 +1,34 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { login } from "../network/ApiManager";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
+
+const ErrorPopup = () => {
+    toast.error("Wrong email or password", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+}
+
+const SuccessPopup = (name) => {
+    toast.success(`Welcome, ${name}`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+}
 
 function LoginPage() {
     const inputDesign = 'mx-2 my-1 p-2 bg-gray-200 rounded outline-cyan-700';
@@ -37,10 +66,22 @@ function LoginPage() {
         })
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         setError(validate(formValue));
-        console.log(formValue);
+        if(formValue.email !== "" && formValue.password !== "") {
+            const token = await login(formValue);
+            console.log(token);
+
+            
+            if(token === -1) {
+                ErrorPopup();
+            }
+            else {
+                const decoded = jwtDecode(token);
+                SuccessPopup(decoded.username);
+            }
+        }
     }
 
     return (

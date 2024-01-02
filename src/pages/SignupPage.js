@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { signup } from "../network/ApiManager";
 
 function SignupPage() {
 
@@ -45,7 +46,9 @@ function SignupPage() {
     const handleSubmit = (event) => {
         event.preventDefault();
         setError(validate(formValue));
-        console.log(formValue);
+        if(formValue.username !== "" && formValue.email !== "" && formValue.password !== "") {
+            signup(formValue);
+        }
     }
 
     return (
