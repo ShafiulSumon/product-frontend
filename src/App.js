@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(true);
     const [dropdownFlag, setDropdownFlag] = useState(false);
     
     useEffect(() => {

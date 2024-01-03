@@ -2,61 +2,21 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { login } from "../network/ApiManager";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "react-toastify";
-
-const ErrorPopup = () => {
-    toast.error("Wrong email or password", {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        });
-}
-
-const SuccessPopup = (name) => {
-    toast.success(`Welcome, ${name}`, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        });
-}
+import { ErrorPopup, SuccessPopup } from "../utils/Popups";
+import Validate from "../utils/EmailValidation";
 
 function LoginPage() {
     const inputDesign = 'mx-2 my-1 p-2 bg-gray-200 rounded outline-cyan-700';
     const errorDesign = 'mx-2 text-red-500 text-xm justify-start';
 
     const initialValue = {
+        "username": "",
         "email": "",
         "password": ""
     };
 
     const [formValue, setFormValue] = useState(initialValue);
     const [error, setError] = useState(initialValue);
-
-    const validate = (values) => {
-        const errors = {};
-        const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-        if(!values.email) {
-            errors.email = "Email is required!";
-        }
-        else if(!regex.test(values.email)) {
-            errors.email = "Email is in wrong format.(e.g. XYZ@xyz.com)";
-        }
-        if(!values.password) {
-            errors.password = "Password is required!";
-        }
-        return errors;
-    }
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -68,18 +28,17 @@ function LoginPage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setError(validate(formValue));
-        if(formValue.email !== "" && formValue.password !== "") {
-            const token = await login(formValue);
-            console.log(token);
+        const er = Validate(formValue);
+        setError(er);
 
-            
+        if(er.email === "" && er.password === "") {
+            const token = await login(formValue);
             if(token === -1) {
-                ErrorPopup();
+                ErrorPopup("Wrong email or password");
             }
             else {
                 const decoded = jwtDecode(token);
-                SuccessPopup(decoded.username);
+                SuccessPopup(`Welcome, ${decoded.username}`);
             }
         }
     }

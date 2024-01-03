@@ -24,10 +24,9 @@ function FloatLogout({ showDropdown, setLoggedIn }) {
         <ul className="bg-white mt-1 p-2 w-24 rounded fixed top-20 right-5">
             {options.map((item, key) => {
                 return ( 
-                <Link to={item.link}>
+                <Link to={item.link} key={key}>
                     <li 
                         onClick={() => handleClick(item.name)}
-                        key={key}
                         className="hover:bg-yellow-200 rounded cursor-pointer py-2 text-center"
                     >
                         {item.name}

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { signup } from "../network/ApiManager";
+import { ErrorPopup, SuccessPopup } from "../utils/Popups";
+import Validate from "../utils/EmailValidation";
 
 function SignupPage() {
 
@@ -16,25 +18,6 @@ function SignupPage() {
     const [formValue, setFormValue] = useState(initialValue);
     const [error, setError] = useState(initialValue);
 
-    const validate = (values) => {
-        const errors = {};
-        const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-        if(!values.username){
-            errors.username = "Username is required!";
-        }
-        if(!values.email) {
-            errors.email = "Email is required!";
-        }
-        else if(!regex.test(values.email)) {
-            errors.email = "Email is in wrong format.(e.g. XYZ@xyz.com)";
-        }
-        if(!values.password) {
-            errors.password = "Password is required!";
-        }
-        return errors;
-    }
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormValue({
@@ -43,11 +26,18 @@ function SignupPage() {
         })
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        setError(validate(formValue));
+        setError(Validate(formValue));
         if(formValue.username !== "" && formValue.email !== "" && formValue.password !== "") {
-            signup(formValue);
+            const response = await signup(formValue);
+            console.log(response);
+            if(response.message === "data saved") {
+                SuccessPopup("Registration successful.");
+            }
+            else {
+                ErrorPopup(response.message);
+            }
         }
     }
 

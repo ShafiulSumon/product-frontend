@@ -19,7 +19,7 @@ const getAllProducts = async () => {
 const signup = async (data) => {
     const url = URL().signup;
     const response = await PostData(url, data);
-    console.log(response);
+    return response;
 }
 
 const login = async (data) => {
